@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url('https://faisaljaman1012.github.io/img/portfolio/PANTHER.png');
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: nowrap;
+        }
+        .section {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 30%;
+            animation: fadeIn 1s ease-in-out;
+            cursor: pointer;
+        }
+        .section-content {
+            display: none;
+            margin-top: 20px;
+            overflow: auto;
+            max-height: 300px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .navbar {
+            width: 100%;
+            background-color: white;
+            color: black;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-center {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .navbar-links a {
+            color: black;
+            text-decoration: none;
+            font-size: 18px;
+            margin-left: 20px;
+        }
+        .navbar-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function toggleSection(sectionId) {
+            const sectionContent = document.getElementById(sectionId);
+            sectionContent.style.display = sectionContent.style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.addEventListener('click', function(event) {
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(section => {
+                if (!section.contains(event.target) && !section.previousElementSibling.contains(event.target)) {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-center">Welcome Mr. Md Faisal Jaman</div>
+        <div class="navbar-links">
+            <a href="{{ url_for('list_files') }}">File Explorer</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="section" onclick="toggleSection('pendingUsersSection')">
+            <h2>Pending User Approvals</h2>
+            <div id="pendingUsersSection" class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for username, details in pending_users.items() %}
+                        <tr>
+                            <td>{{ username }}</td>
+                            <td>{{ details.password }}</td>
+                            <td>
+                                <a href="{{ url_for('approve_user', username=username) }}">Approve</a>
+                                <a href="{{ url_for('reject_user', username=username) }}">Reject</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section" onclick="toggleSection('totalUsersSection')">
+            <h2>Total Users</h2>
+            <div id="totalUsersSection" class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for username, details in users.items() %}
+                        <tr>
+                            <td>{{ username }}</td>
+                            <td>{{ details.password }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section" onclick="toggleSection('userActivitySection')">
+            <h2>User Activity</h2>
+            <div id="userActivitySection" class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Username</th>
+                            <th>Action</th>
+                            <th>File/Folder</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in user_activities %}
+                        <tr>
+                            <td>{{ activity.timestamp }}</td>
+                            <td>{{ activity.username }}</td>
+                            <td>{{ activity.action }}</td>
+                            <td>{{ activity.path }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section" onclick="toggleSection('loginActivitySection')">
+            <h2>Login Activity</h2>
+            <div id="loginActivitySection" class="section-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Username</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in login_activities %}
+                        <tr>
+                            <td>{{ activity.timestamp }}</td>
+                            <td>{{ activity.username }}</td>
+                            <td>{{ activity.action }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

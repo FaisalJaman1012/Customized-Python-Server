@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>File Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="navbar" style="background-color: white; color: black;">
+        <div class="navbar-center">Welcome To File Explorer 📂 </div>
+        <a href="{{ url_for('logout') }}" class="navbar-right">Logout</a>
+    </div>
+    <div class="container">
+        
+
+        <h2 style="word-wrap: break-word;">Current Directory: /{{ path }}</h2>
+
+        {% if path and path != "" %}
+            <a href="{{ url_for('list_files', path=path.rsplit('/', 1)[0] if '/' in path else '') }}">⬅️ Back</a>
+        {% endif %}
+
+        <div class="explorer">
+            <!-- Folders -->
+            {% for folder in folders %}
+                <div class="item">
+                    <i class="fa-solid fa-folder fa-3x" style="color: #ffcc00;"></i>
+                    <a href="{{ url_for('list_files', path=path + '/' + folder if path else folder) }}" style="word-wrap: break-word;">{{ folder }}</a>
+                </div>
+            {% endfor %}
+            
+            <!-- Files with Previews -->
+            {% for file in files %}
+            <div class="item">
+                {% if file.endswith('.jpg') or file.endswith('.png') or file.endswith('.jpeg') %}
+                    <!-- Image Preview -->
+                    <img src="{{ url_for('download_file', path=path + '/' + file if path else file) }}" 
+                        class="preview-image" 
+                        onclick="openImagePreview(this.src)"
+                        alt="Preview">
+                {% elif file.endswith('.pdf') %}
+                    <!-- PDF Preview Button -->
+                    <button class="preview-btn" onclick="openPdfPreview('{{ url_for('preview_file', path=path + '/' + file if path else file) }}')">
+                        <i class="fa-solid fa-file-pdf fa-3x" style="color: #e74c3c;"></i>
+                    </button>
+                {% elif file.endswith('.txt') or file.endswith('.csv') %}
+                    <!-- Text/CSV Preview Button -->
+                    <button class="preview-btn" onclick="openTextPreview('{{ url_for('download_file', path=path + '/' + file if path else file) }}')">
+                        <i class="fa-solid fa-file-lines fa-3x" style="color: #2c3e50;"></i>
+                    </button>
+                {% else %}
+                    <!-- Default Icon for Other Files -->
+                    <i class="fa-solid fa-file fa-3x" style="color: #3498db;"></i>
+                {% endif %}
+                <a href="{{ url_for('download_file', path=path + '/' + file if path else file) }}" style="word-wrap: break-word;">{{ file }}</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Image Preview Modal -->
+        <div id="imagePreviewModal" class="modal" onclick="closeModal(event)">
+            <span class="close" onclick="closeImagePreview()">&times;</span>
+            <img id="imagePreview" class="modal-content">
+        </div>
+
+        <!-- PDF Preview Modal -->
+        <div id="pdfPreviewModal" class="modal" onclick="closeModal(event)">
+            <span class="close" onclick="closePdfPreview()">&times;</span>
+            <iframe id="pdfPreview" class="modal-content" style="width: 80%; height: 80vh;"></iframe>
+        </div>
+
+        <!-- Text File Preview Modal -->
+        <div id="textPreviewModal" class="modal" onclick="closeModal(event)">
+            <div class="modal-content">
+                <span class="close" onclick="closeTextPreview()">&times;</span>
+                <pre id="textPreviewContent"></pre>
+            </div>
+        </div>
+
+        <h3>Upload a File</h3>
+        <div class="upload-box">
+            <form id="uploadForm" action="{{ url_for('upload_file', path=path|default('', true)) }}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="fileInput">
+                <label for="fileInput">📤 Choose a file to upload</label>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+    <div id="popupMessage" class="popup">File uploaded successfully!</div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
