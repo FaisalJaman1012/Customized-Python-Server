@@ -1,0 +1,17 @@
+[
+    {
+        "timestamp": "2025-02-03 23:25:22",
+        "username": "test",
+        "action": "logout"
+    },
+    {
+        "timestamp": "2025-02-03 23:38:27",
+        "username": "test",
+        "action": "login"
+    },
+    {
+        "timestamp": "2025-02-04 00:18:01",
+        "username": "test",
+        "action": "logout"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "timestamp": "2025-02-03 23:21:31",
+        "username": "test",
+        "action": "view",
+        "path": ""
+    },
+    {
+        "timestamp": "2025-02-03 23:21:34",
+        "username": "test",
+        "action": "preview",
+        "path": "Audit_Issues_ver1.1 - AuditorCopy.pdf"
+    },
+    {
+        "timestamp": "2025-02-03 23:38:32",
+        "username": "test",
+        "action": "view",
+        "path": ""
+    },
+    {
+        "timestamp": "2025-02-03 23:42:31",
+        "username": "test",
+        "action": "view",
+        "path": ""
+    }
+]
